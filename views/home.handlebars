@@ -1,8 +1,7 @@
-<h2>This is home page</h2>
-
-{{#each music}}
-
-<li><a href="detail?index={{ @index }}"></a></li>
-
+<ul>
+{{#each movies}}
+<a href="detail?index={{ @index }}">
+<li>movie: {{ title }}</li>
+</a>
 {{/each}}
-
+</ul>

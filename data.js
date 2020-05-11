@@ -12,5 +12,9 @@ exports.getAll = () => {
 return musics;
 };
 
-
+/*exports.getmusic = (title) => {
+    return musics.find((music) => {
+        return music.title === title;
+    })
+}*/
 
