@@ -1,0 +1,14 @@
+<h1>Music Detail {{index}}</h1>
+
+{{#if music}}
+<h2>music title: {{ music.title }}</h2>
+
+<p>artist: {{ music.artist }}</p>
+<p>type: {{ music.type }}</p>
+<p>year: {{ music.year }}</p>
+
+{{else}}
+<p>not found</p>
+{{/if}}
+
+<p><a href="/">back</a></p>
