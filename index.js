@@ -29,26 +29,23 @@ response.type('text/html');
 response.sendFile(__dirname + '/public/home.html');
 });
 
-// app.get('/', (request, response) =>{
-// response.render('home', {musics: all});
-// });
-
 app.get('/', (request, response) => {
   return Music.find({}).lean()
-  .then((musics) => {
-    console.log(musics);
-    response.send(musics)
+  .then((music) => {
+    console.log(music);
+
+    response.send(music)
   }) 
   .catch(err => console.log(err));  
 });
 
-app.get('/detail', (request, response,) => {
+app.get('/detail', (request, response) => {
 let title = request.query.title;
 // let music = all[index];
 // response.render('detail', {index:index, music: music}
-  Music.findOne({ "title":title }).lean()
+  Music.findOne({"title":title}).lean()
       .then((music) => {
-          response.send(music)
+          response.send(music);
           console.log(music);
       })
       .catch(err => console.log(err));
@@ -58,22 +55,16 @@ app.get('/delete', (request, response) => {
   let title = request.query.title;
   Music.deleteOne({"title":title}).lean()
   .then((music) => {
-    console.log(music);
-    response.send(music)
+    console.log(music)
+    response.send(music);
   }) 
   .catch(err => console.log(err));  
 });
-
 
 app.get('/about',(request,response) => {
 response.type('text/plain');
 response.send('About page');
 });
-
-//handle a POST request
-//app.post('/', (req, res) => {
-  //console.log(req.body); 
-//});//
 
 // define 404 handler
 app.use( (request,response) => {
