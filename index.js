@@ -29,15 +29,25 @@ response.type('text/html');
 response.sendFile(__dirname + '/public/home.html');
 });
 
-app.get('/', (request, response) => {
+app.get('/', (request, response,) => {
   return Music.find({}).lean()
-  .then((music) => {
-    console.log(music);
-
-    response.send(music)
+  .then((musics) => {
+    console.log(musics);
+    response.render('home', {musics: musics});
   }) 
-  .catch(err => console.log(err));  
+  .catch(err => console.log(err));
+  //.catch(err => next(err));
 });
+
+app.use('/api', require('cors')());
+app.get('/api/musics', (request, response) => {
+  return Music.find({}).lean()
+    .then((musics) => {
+      console.log(musics);
+      response.json(musics);
+    }) 
+    .catch(err => console.log(err));  
+  });
 
 app.get('/detail', (request, response) => {
 let title = request.query.title;
@@ -50,13 +60,35 @@ let title = request.query.title;
       })
       .catch(err => console.log(err));
 });
+app.get('/api/musics/:title', (request, response) => {
+  let title = request.params.title;
+  // let music = all[index];
+  // response.render('detail', {index:index, music: music}
+    Music.findOne({"title":title}).lean()
+        .then((musics) => {
+          response.json(musics);
+          console.log(musics);
+        })
+        .catch(err => console.log(err));
+  });
 
-app.get('/delete', (request, response) => {
+// insert or update a single record
+app.post('/api/add', (request, response) => {
+  const newMusic= request.body;
+  Music.update({'title':newMusic.title}, newMusic, {upsert:true}, (err, result) => {
+  if (err) return next(err);
+  response.json(result)
+  console.log(result);
+});
+  
+});
+
+app.get('/api/delete', (request, response) => {
   let title = request.query.title;
   Music.deleteOne({"title":title}).lean()
   .then((music) => {
-    console.log(music)
-    response.send(music);
+    response.json(music);
+    console.log(music);
   }) 
   .catch(err => console.log(err));  
 });
