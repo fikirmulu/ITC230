@@ -33,7 +33,8 @@ app.get('/', (request, response,) => {
   return Music.find({}).lean()
   .then((musics) => {
     console.log(musics);
-    response.render('home', {musics: musics});
+    //response.render('home', {musics: musics});
+    response.render('home_react', {musics: JSON.stringify(musics)});
   }) 
   .catch(err => console.log(err));
   //.catch(err => next(err));
