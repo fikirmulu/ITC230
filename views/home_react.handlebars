@@ -26,12 +26,19 @@ const MusicIndex = (props) => {
 }
 
 const MusicDetail = (props) => {
-    console.log(props)
-    return <div> <b>Details for {props.item.title}:</b>
-        <p>artist:{props.item.artist}</p>
-        <p>genre:{props.item.genre}</p>
-        <p>year:{props.item.year}</p>
-        </div>
+
+    return <div> 
+      <form>
+          Title:<input onChange={props.change} type="text" name="title" value={props.item.title || ""}/><p/>
+          Artist:<input onChange={props.change} type="text" name="artist" value={props.item.artist || ""}/><p/>
+          genre:<input onChange={props.change} type="text" name="genre" value={props.item.genre || ""}/><p/>
+          year:<input onChange={props.change} type="text" name="year" value={props.item.year || ""}/><p/>
+          
+      </form> 
+       <p/><button onClick={props.save}>Save</button>
+       <button onClick={props.save}>Delete</button>
+       <button onClick={props.save}>Clear</button>
+    </div>
 }
 
 class App extends React.Component {
@@ -43,6 +50,10 @@ class App extends React.Component {
             currentMusic: { } // current selected item
           }
         this.handleClick = this.handleClick.bind(this);
+        this.onChange = this.onChange.bind(this);
+        this.onSave = this.onSave.bind(this);
+        this.onDelete = this.onDelete.bind(this);
+        this.onClear = this.onClear.bind(this);
       }
 
 handleClick(e) {
@@ -56,13 +67,58 @@ handleClick(e) {
         currentMusic: newMusic
         });
     }
+
+    // clear details form
+      onClear() {
+        this.setState({currentMusic: {}});
+      }
+     
+    //handle detail form changes
+    onChange(event) {
+        var newMusic = this.state.currentMusic;
+        console.log(event.target)
+        newMusic[event.target.name] = event.target.value
+        this.setState({currentMusic: newMusic});
+    }
+    //handle item delete
+    onDelete() {
+        let newMusic = this.state.currentMusic;
+        console.log(item)
+    fetch("/api/delete/"+music)
+    .then((response) => {
+        return response.json();
+    })
+    .then((result) => {
+        console.log(result) 
+    })
+    .catch(err => console.log(err))
+    }
+    
+    //handle item save
+    onSave() {
+        let newMusic = this.state.currentMusic;
+
+    fetch("/api/add/", {
+    method: "POST",
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(newMusic)
+    })
+    .then((response) => {
+        return response.json();
+    })
+    .then((result) => {
+        console.log(result) 
+    })
+    .catch(err => console.log(err))
+    }
+
       render() {
         // render app UI elements
         return (
           <div>
           <h2>My music collections</h2>
           <MusicIndex items={this.state.items} clickhandler={this.handleClick}/>
-          <MusicDetail item={this.state.currentMusic}/>
+          <MusicDetail change={this.onChange} save={this.onSave} clear={this.onClear} delete={this.onDelete} item={this.state.currentMusic}/>
           </div>
           );
           
